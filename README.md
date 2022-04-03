@@ -42,4 +42,12 @@ Install dependencies
 python3 -m pip install -r requirements.txt
 ```
 
+## Setup Environment Variables
+
+In PyCharm, select "Edit Configurations..." from the configuration menu, and add the following environment variables
+
+* ORACLE_USER: your UF username
+* ORACLE_PASSWORD: your UF Oracle password
+* DATABASE_URL: the url to the CISE instance (`oracle.cise.uf.edu/orcl`)
+
 
