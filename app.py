@@ -10,8 +10,10 @@ connection = cx_Oracle.connect(user=os.environ.get("ORACLE_USER"),
 
 
 @app.route('/')
-def welcome():  # put application's code here
-    return render_template("welcome.html")
+def welcome(): # put application's code here
+    cursor = connection.cursor
+    return render_template("welcome.html",
+                           cursor = cursor)
 
 
 @app.route('/basic')
