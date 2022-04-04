@@ -13,7 +13,7 @@ py -m pip install --user virtualenv
 In the root folder of the project, create a virtual environment, then activate it
 ```
 py -m venv venv
-.\env\Scripts\activate
+.\venv\Scripts\activate
 ```
 
 Install dependencies
@@ -48,6 +48,6 @@ In PyCharm, select "Edit Configurations..." from the configuration menu, and add
 
 * ORACLE_USER: your UF username
 * ORACLE_PASSWORD: your UF Oracle password
-* DATABASE_URL: the url to the CISE instance (`oracle.cise.uf.edu/orcl`)
+* DATABASE_URL: the url to the CISE instance (`oracle.cise.ufl.edu/orcl`)
 
 
