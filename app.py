@@ -1,8 +1,14 @@
+import sys
+
 import cx_Oracle
 import os
 from flask import Flask, render_template
 
 app = Flask(__name__)
+
+if sys.platform.startswith("darwin"):
+    lib_dir = os.path.join(os.environ.get("HOME"), "Downloads", "instantclient_19_8")
+    cx_Oracle.init_oracle_client(lib_dir=lib_dir)
 
 connection = cx_Oracle.connect(user=os.environ.get("ORACLE_USER"),
                                password=os.environ.get("ORACLE_PASSWORD"),
