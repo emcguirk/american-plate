@@ -15,6 +15,18 @@
             resultsList.append(`${name}: ${value}`)
             resultsList.append(document.createElement('br'))
         })
+
+        const data = {{ data|tojson|safe }}
+
+        let year= []
+        let name = []
+        let farm_income = []
+        for (let i = 0; i < data.length; i++) {
+            year.push(data[i]['YEAR'])
+            name.push(data[i]["NAME"])
+            farm_income.push(data[i]["FARM_INCOME"])
+        }
+        console.log(year)
     </script>
 </body>
 </html>

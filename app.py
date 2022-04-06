@@ -51,7 +51,13 @@ def query_one(commodity):
     """
     cursor = connection.cursor()
     cursor.execute(sql, commodity=commodity)
-    return render_template("pro_landing.html", cursor=cursor)
+    data = rows_to_dict_list(cursor)
+    return render_template("query1results.html", data=data)
+
+
+def rows_to_dict_list(cursor):
+    columns = [i[0] for i in cursor.description]
+    return [dict(zip(columns, row)) for row in cursor]
 
 
 if __name__ == '__main__':

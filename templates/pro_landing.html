@@ -7,8 +7,6 @@
 <body>
     <a href="{{ url_for('welcome') }}">return home</a>
     <h1>Pro Version</h1>
-    {% for name, farm_income, year in cursor %}
-        <p>{{ name }}: {{ year }}, {{ farm_income }}</p>
-    {% endfor %}
+    {{ data[0]|tojson|safe }}
 </body>
 </html>
