@@ -1,8 +1,8 @@
 import sys
-
 import cx_Oracle
 import os
-from flask import Flask, render_template
+import json
+from flask import Flask, render_template, request, redirect, url_for
 
 app = Flask(__name__)
 
@@ -29,8 +29,28 @@ def basic():
 
 @app.route('/pro')
 def pro():
+    return render_template("proform.html")
+
+
+@app.route('/pro/<query_no>', methods=['GET', 'POST'])
+def proform(query_no):
+    path = "query" + query_no + "landing.html"
+    if request.method == "POST":
+        commodity = request.form.get('Commodity')
+        return redirect(url_for('query_one', commodity=commodity))
+    else:
+        return render_template(path)
+
+
+@app.route('/pro/1/<commodity>')
+def query_one(commodity):
+    sql = """
+    SELECT name, farm_income, year
+    FROM Commodity
+    WHERE name = :commodity 
+    """
     cursor = connection.cursor()
-    cursor.execute("SELECT name, AVG(farm_income) income FROM commodity GROUP BY name")
+    cursor.execute(sql, commodity=commodity)
     return render_template("pro_landing.html", cursor=cursor)
 
 
