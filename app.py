@@ -35,10 +35,23 @@ def pro():
 @app.route('/pro/<query_no>', methods=['GET', 'POST'])
 def proform(query_no):
     path = "query" + query_no + "landing.html"
+    print(query_no)
     if request.method == "POST":
         commodity = request.form.get('Commodity')
         return redirect(url_for('query_one', commodity=commodity))
+    elif query_no == "1":
+        sql = """
+        SELECT DISTINCT name
+        FROM Commodity
+        """
+        cursor = connection.cursor()
+        cursor.execute(sql)
+        data = []
+        for name in cursor.fetchall():
+            data.append(name[0])
+        return render_template(path, data=data)
     else:
+        print("Took else path")
         return render_template(path)
 
 

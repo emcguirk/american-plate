@@ -11,52 +11,9 @@
             <div>
                 <!-- <input list="queries" name=> -->
                 <select name="Commodity" id="queries">
-                    <option value = "CUT FLOWERS & CUT CULTIVATED GREENS">CUT FLOWERS & CUT CULTIVATED GREENS</option>
-                    <option value = "FLOWER SEEDS">FLOWER SEEDS</option>
-                    <option value = "BISON">BISON</option>
-                    <option value = "MOHAIR">MOHAIR</option>
-                    <option value = "CUT CHRISTMAS TREES & SHORT TERM WOODY CROPS">CUT CHRISTMAS TREES & SHORT TERM WOODY CROPS</option>
-                    <option value = "COTTON">COTTON</option>
-                    <option value = "BARLEY">BARLEY</option>
-                    <option value = "TOBACCO">TOBACCO</option>
-                    <option value = "VEGETABLE SEEDS">VEGETABLE SEEDS</option>
-                    <option value = "MUSHROOMS">MUSHROOMS</option>
-                    <option value = "SOD">SOD</option>
-                    <option value = "SHEEP">SHEEP</option>
-                    <option value = "TRANSPLANTS">TRANSPLANTS</option>
-                    <option value = "WHEAT">WHEAT</option>
-                    <option value = "RICE">RICE</option>
-                    <option value = "SORGHUM">SORGHUM</option>
-                    <option value = "EQUINE">EQUINE</option>
-                    <option value = "FLOWERING PLANTS, POTTED">FLOWERING PLANTS, POTTED</option>
-                    <option value = "DEER">DEER</option>
-                    <option value = "PROPAGATIVE MATERIAL">PROPAGATIVE MATERIAL</option>
-                    <option value = "ALPACAS">ALPACAS</option>
-                    <option value = "SPECIALTY ANIMALS, OTHER">SPECIALTY ANIMALS, OTHER</option>
-                    <option value = "FIELD CROPS, OTHER">FIELD CROPS, OTHER</option>
-                    <option value = "AQUATIC PLANTS">AQUATIC PLANTS</option>
-                    <option value = "LLAMAS">LLAMAS</option>
-                    <option value = "AQUATIC PLANTS">AQUATIC PLANTS</option>
-                    <option value = "MAPLE SYRUP">MAPLE SYRUP</option>
-                    <option value = "CATTLE">CATTLE</option>
-                    <option value = "GRAIN">GRAIN</option>
-                    <option value = "BULBS & CORMS & RHIZOMES & TUBERS">BULBS & CORMS & RHIZOMES & TUBERS</option>
-                    <option value = "GOATS">GOATS</option>
-                    <option value = "CUT CHRISTMAS TREES">CUT CHRISTMAS TREES</option>
-                    <option value = "FLORICULTURE, OTHER">FLORICULTURE, OTHER</option>
-                    <option value = "FOLIAGE PLANTS">FOLIAGE PLANTS</option>
-                    <option value = "SOYBEANS">SOYBEANS</option>
-                    <option value = "MUSHROOM SPAWN">MUSHROOM SPAWN</option>
-                    <option value = "SHORT TERM WOODY CROPS">SHORT TERM WOODY CROPS</option>
-                    <option value = "RABBITS">RABBITS</option>
-                    <option value = "CORN">CORN</option>
-                    <option value = "ELK">ELK</option>
-                    <option value = "TOMATOES">TOMATOES</option>
-                    <option value = "NURSERY, OTHER">NURSERY, OTHER</option>
-                    <option value = "HONEY">HONEY</option>
-                    <option value = "HOGS">HOGS</option>
-                    <option value = "MILK">MILK</option>
-                    <option value = "WOOL">WOOL</option>
+                    {% for name in data %}
+                        <option value = "{{ name }}">{{ name }}</option>
+                    {% endfor %}
                 </datalist>
                 <input type="submit">
             </div>
