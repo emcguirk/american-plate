@@ -9,20 +9,20 @@ app = Flask(__name__)
 if sys.platform.startswith("darwin"):
     lib_dir = os.path.join(os.environ.get("HOME"), "Downloads", "instantclient_19_8")
 else:
-    lib_dir= os.path.join(os.environ.get("USERPROFILE"), "Downloads", "instantclient_19_8")
+    lib_dir = os.path.join(os.environ.get("USERPROFILE"), "Downloads", "instantclient_19_8")
 
 cx_Oracle.init_oracle_client(lib_dir=lib_dir)
 
 connection = cx_Oracle.connect(user=os.environ.get("ORACLE_USER"),
                                password=os.environ.get("ORACLE_PASSWORD"),
-                               dsn=os.environ.get("DATABASE_URL"))
+                               dsn="oracle.cise.ufl.edu/orcl")
 
 
 @app.route('/')
-def welcome(): # put application's code here
+def welcome():  # put application's code here
     cursor = connection.cursor
     return render_template("welcome.html",
-                           cursor = cursor)
+                           cursor=cursor)
 
 
 @app.route('/basic')
