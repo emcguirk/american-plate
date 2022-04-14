@@ -23,13 +23,7 @@ connection = cx_Oracle.connect(user=os.environ.get("ORACLE_USER"),
 @app.route('/')
 def welcome():  # put application's code here
     cursor = connection.cursor
-    return render_template("welcome.html",
-                           cursor=cursor)
-
-
-@app.route('/basic')
-def basic():
-    return render_template("basic_landing.html")
+    return render_template("proform.html")
 
 
 @app.route('/pro')
@@ -37,14 +31,12 @@ def pro():
     return render_template("proform.html")
 
 
-@app.route('/pro/<query_no>', methods=['GET', 'POST'])
-def proform(query_no):
-    path = "query" + query_no + "landing.html"
-    print(query_no)
+@app.route('/pro/1', methods=['GET', 'POST'])
+def query_one_form():
     if request.method == "POST":
         commodity = request.form.get('Commodity')
         return redirect(url_for('query_one', commodity=commodity))
-    elif query_no == "1":
+    else:
         sql = """
         SELECT DISTINCT name
         FROM Commodity
@@ -54,10 +46,7 @@ def proform(query_no):
         data = []
         for name in cursor.fetchall():
             data.append(name[0])
-        return render_template(path, data=data)
-    else:
-        print("Took else path")
-        return render_template(path)
+        return render_template("query1landing.html", data=data)
 
 
 @app.route('/pro/1/<commodity>')
