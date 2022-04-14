@@ -8,6 +8,8 @@ app = Flask(__name__)
 
 if sys.platform.startswith("darwin"):
     lib_dir = os.path.join(os.environ.get("HOME"), "Downloads", "instantclient_19_8")
+elif sys.platform.startswith("linux"):
+    lib_dir = "/opt/oracle/instantclient_21_5"
 else:
     lib_dir = os.path.join(os.environ.get("USERPROFILE"), "Downloads", "instantclient_19_8")
 
