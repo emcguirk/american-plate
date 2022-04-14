@@ -20,10 +20,23 @@ connection = cx_Oracle.connect(user=os.environ.get("ORACLE_USER"),
                                dsn="oracle.cise.ufl.edu/orcl")
 
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 def welcome():  # put application's code here
-    cursor = connection.cursor
-    return render_template("proform.html")
+    value = 0
+    if request.method == "POST":
+        cursor = connection.cursor()
+        sql = '''
+        SELECT COUNT(*) FROM (
+        SELECT name FROM Commodity
+        UNION ALL
+        SELECT name FROM Crop
+        UNION ALL
+        SELECT name FROM Livestock
+        )
+        '''
+        cursor.execute(sql)
+        value = cursor.fetchall()[0][0]
+    return render_template("proform.html", value=value)
 
 
 @app.route('/pro')
