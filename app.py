@@ -48,7 +48,7 @@ def pro():
 def query_one_form():
     if request.method == "POST":
         commodity = request.form.get('Commodity')
-        return redirect(url_for('query_one', commodity=commodity))
+        return redirect(url_for('query_one_results', commodity=commodity))
     else:
         sql = """
         SELECT DISTINCT name
@@ -63,7 +63,7 @@ def query_one_form():
 
 
 @app.route('/pro/1/<commodity>')
-def query_one(commodity):
+def query_one_results(commodity):
     sql = """
     SELECT name, farm_income, year
     FROM Commodity
@@ -73,6 +73,29 @@ def query_one(commodity):
     cursor.execute(sql, commodity=commodity)
     data = rows_to_dict_list(cursor)
     return render_template("query1results.html", data=data)
+
+
+@app.route('/pro/2')
+def query_two_results(animal, vegetable):
+        sql ="""
+        SELECT cr_year year, animal_income/veg_income FROM
+        (SELECT c.year ls_year, ls.name animal_name, sum(farm_income) animal_income
+        from Commodity c JOIN Livestock ls
+        ON c.name = ls.name
+        WHERE ls.name = :animal
+        group by c.year, ls.name) animal
+        JOIN
+        (SELECT cr.year cr_year, cr.name veg_name, sum(farm_income) veg_income
+        FROM Commodity c JOIN Crop cr
+        ON cr.name = c.name
+        where cr.name = :vegetable
+        group by cr.year, cr.name) veg
+        ON ls_year = cr_year
+        """
+        cursor = connection.cursor()
+        cursor.execute(sql, animal=animal, vegetable=vegetable)
+        data = rows_to_dict_list(cursor)
+        return render_template("query2results.html", data=data)
 
 
 def rows_to_dict_list(cursor):
