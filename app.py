@@ -11,7 +11,7 @@ if sys.platform.startswith("darwin"):
 elif sys.platform.startswith("linux"):
     lib_dir = "/opt/oracle/instantclient_21_5"
 else:
-    lib_dir = os.path.join(os.environ.get("USERPROFILE"), "Downloads", "instantclient_19_8")
+    lib_dir = os.path.join(os.environ.get("USERPROFILE"), "OneDrive", "Downloads", "instantclient_19_8")
 
 cx_Oracle.init_oracle_client(lib_dir=lib_dir)
 
