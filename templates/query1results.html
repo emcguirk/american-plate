@@ -5,10 +5,13 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
         <title>Query 1 Results</title>
+        <link rel="stylesheet" href="https://cdn.bokeh.org/bokeh/release/bokeh-0.12.14.min.css" type="text/css" />
+        <link rel="stylesheet" href="https://cdn.bokeh.org/bokeh/release/bokeh-widgets-0.12.14.min.css" type="text/css" />
+        <link rel="stylesheet" href="https://cdn.bokeh.org/bokeh/release/bokeh-tables-0.12.14.min.css" type="text/css">
     </head>
 <body>
     <div id="results"></div>
-    <a href="{{ url_for("welcome") }}">Back to Queries</a>
+    <a href="{{ url_for("pro") }}">Back to Queries</a>
     <script>
         const resultsList = document.getElementById('results')
         new URLSearchParams(window.location.search).forEach((value, name) => {
@@ -16,16 +19,21 @@
             resultsList.append(document.createElement('br'))
         })
 
-        const data = {{ data|tojson|safe }}
-
-        const name = data[0]['NAME']
-        let year= []
-        let farm_income = []
-        for (let i = 0; i < data.length; i++) {
-            year.push(data[i]['YEAR'])
-            farm_income.push(data[i]["FARM_INCOME"])
-        }
-        console.log(name)
+        // const name = data[0]['NAME']
+        // let year= []
+        // let farm_income = []
+        // for (let i = 0; i < data.length; i++) {
+        //     year.push(data[i]['YEAR'])
+        //     farm_income.push(data[i]["FARM_INCOME"])
+        // }
+        
+        // console.log(name)
     </script>
+    <script src="https://cdn.bokeh.org/bokeh/release/bokeh-2.4.2.min.js"
+    crossorigin="anonymous"></script>
+    <script src="https://cdn.bokeh.org/bokeh/release/bokeh-widgets-2.4.2.min.js"
+    crossorigin="anonymous"></script>
+    {{ bokehDiv|safe }}
+    {{ bokehScript|safe }}
 </body>
 </html>

@@ -3,6 +3,8 @@ import cx_Oracle
 import os
 import json
 from flask import Flask, render_template, request, redirect, url_for
+from bokeh.plotting import figure
+from bokeh.embed import components
 
 app = Flask(__name__)
 
@@ -11,7 +13,7 @@ if sys.platform.startswith("darwin"):
 elif sys.platform.startswith("linux"):
     lib_dir = "/opt/oracle/instantclient_21_5"
 else:
-    lib_dir = os.path.join(os.environ.get("USERPROFILE"), "Downloads", "instantclient_19_8")
+    lib_dir = r"C:\Users\ayeja\Documents\Downloads\instantclient_21_3"
 
 cx_Oracle.init_oracle_client(lib_dir=lib_dir)
 
@@ -65,19 +67,34 @@ def query_one_form():
 @app.route('/pro/1/<commodity>')
 def query_one(commodity):
     sql = """
-    SELECT name, farm_income, year
+    SELECT name, year, SUM(farm_income) farm_income
     FROM Commodity
-    WHERE name = :commodity 
+    WHERE name = :commodity
+    GROUP BY name, year
+    ORDER BY year, name ASC
     """
     cursor = connection.cursor()
     cursor.execute(sql, commodity=commodity)
     data = rows_to_dict_list(cursor)
-    return render_template("query1results.html", data=data)
+    year = []
+    farm_income = []
+    for item in data:
+        year.append(item['YEAR'])
+        farm_income.append(item['FARM_INCOME'])
+    print(year)
+    print(farm_income)
+    p = figure(title = "Cost Changes over Years", x_axis_label='Year', y_axis_label ='Price')
+    p.line(year, farm_income, legend_label="Food ", color="blue", line_width=2)
+    script, div = components(p)
+    
+    return render_template("query1results.html", bokehScript=script, bokehDiv=div)
 
 
 def rows_to_dict_list(cursor):
     columns = [i[0] for i in cursor.description]
     return [dict(zip(columns, row)) for row in cursor]
+
+
 
 
 if __name__ == '__main__':
