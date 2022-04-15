@@ -92,10 +92,26 @@ def query_two_results(animal, vegetable):
         group by cr.year, cr.name) veg
         ON ls_year = cr_year
         """
-        cursor = connection.cursor()
-        cursor.execute(sql, animal=animal, vegetable=vegetable)
-        data = rows_to_dict_list(cursor)
-        return render_template("query2results.html", data=data)
+    cursor = connection.cursor()
+    cursor.execute(sql, animal=animal, vegetable=vegetable)
+    data = rows_to_dict_list(cursor)
+    return render_template("query2results.html", data=data)
+
+
+@app.route('/pro/3/<crop>')
+def query_three_results(crop):
+    sql = """
+    SELECT c.region, cr.year, SUM(acres_harvested)
+    FROM Commodity c
+    JOIN
+    CROP cr ON cr.State = c.State
+    WHERE cr.name = :crop
+    GROUP BY c.region, cr.year
+    """
+    cursor = connection.cursor()
+    cursor.execute(sql, crop=crop)
+    data = rows_to_dict_list(cursor)
+    return render_template("query3results.html", data=data)
 
 
 def rows_to_dict_list(cursor):
