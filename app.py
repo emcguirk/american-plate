@@ -75,7 +75,7 @@ def query_one_results(commodity):
     return render_template("query1results.html", data=data)
 
 
-@app.route('/pro/2?<animal>?<vegetable>')
+@app.route('/pro/2/<animal>/<vegetable>')
 def query_two_results(animal, vegetable):
     sql = """
         SELECT cr_year year, animal_income/veg_income FROM
@@ -112,6 +112,29 @@ def query_three_results(crop):
     cursor.execute(sql, crop=crop)
     data = rows_to_dict_list(cursor)
     return render_template("query3results.html", data=data)
+
+
+@app.route('/pro/4/<state>/<county>')
+def query_four_results(state, county):
+    sql = '''
+    SELECT income.year, income.earnings/value.assets ROI FROM
+    (SELECT year, SUM(farm_income) earnings
+    FROM Commodity
+    WHERE state = :state AND county = :county
+    GROUP BY year) income
+    JOIN
+    (SELECT year, sum(asset_value) assets
+    FROM Land_Value
+    WHERE state = :state AND county = :county
+    GROUP BY year) value
+    ON income.year = value.year
+    '''
+    state = state.upper()
+    county = county.upper()
+    cursor = connection.cursor()
+    cursor.execute(sql, state=state, county=county)
+    data = rows_to_dict_list(cursor)
+    return render_template("query4results.html", data=data)
 
 
 def rows_to_dict_list(cursor):
