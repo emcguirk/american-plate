@@ -75,9 +75,9 @@ def query_one_results(commodity):
     return render_template("query1results.html", data=data)
 
 
-@app.route('/pro/2')
+@app.route('/pro/2?<animal>?<vegetable>')
 def query_two_results(animal, vegetable):
-        sql ="""
+    sql = """
         SELECT cr_year year, animal_income/veg_income FROM
         (SELECT c.year ls_year, ls.name animal_name, sum(farm_income) animal_income
         from Commodity c JOIN Livestock ls
