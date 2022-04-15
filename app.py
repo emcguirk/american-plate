@@ -65,9 +65,10 @@ def query_one_form():
 @app.route('/pro/1/<commodity>')
 def query_one_results(commodity):
     sql = """
-    SELECT name, farm_income, year
+    SELECT name, year, SUM(farm_income)
     FROM Commodity
-    WHERE name = :commodity 
+    WHERE name = :commodity
+    GROUP BY name, year
     """
     cursor = connection.cursor()
     cursor.execute(sql, commodity=commodity)
