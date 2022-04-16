@@ -7,19 +7,6 @@
         <title> Query Form</title>
     </head>
     <body>
-        <!-- <form action="american-plate/pro_landing.html">
-            <div>
-                <input list="queries" name="query">
-                <datalist id="queries">
-                    <option value = "Query 1: Cost of Commodities">
-                    <option value = "Query 2: Meat vs. Veggies">
-                    <option value = "Query 3: Regional Production">
-                    <option value = "Query 4: Land Productivity">
-                    <option value = "Query 5: ">
-                </datalist>
-                <input type="submit">
-            </div>
-        </form> -->
         <button onclick="window.location.href='{{ url_for("query_one_form") }}'">
         Query 1: Cost of Commodities
         </button>
@@ -29,7 +16,7 @@
         <button onclick="window.location.href='{{ url_for('query_three_form') }}'">
         Query 3: Regional Production
         </button>
-        <button onclick="window.location.href='query4landing.html'">
+        <button onclick="window.location.href='{{ url_for('query_four_form') }}'">
         Query 4: Land Productivity
         </button>
         <button onclick="window.location.href='query5landing.html'">

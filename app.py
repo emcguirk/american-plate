@@ -2,11 +2,13 @@ import sys
 import cx_Oracle
 import os
 import json
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, session
 from bokeh.embed import components
 from bokeh.plotting import figure
 
 app = Flask(__name__)
+
+app.secret_key = '9263e93da73b4365a4d222d7c147fc29'
 
 if sys.platform.startswith("darwin"):
     lib_dir = os.path.join(os.environ.get("HOME"), "Downloads", "instantclient_19_8")
@@ -67,18 +69,11 @@ def query_one_form():
 @app.route('/pro/1/<commodity>')
 def query_one(commodity):
     sql = """
-<<<<<<< HEAD
     SELECT name, year, SUM(farm_income) farm_income
     FROM Commodity
     WHERE name = :commodity
     GROUP BY name, year
     ORDER BY year, name ASC
-=======
-    SELECT name, year, SUM(farm_income)
-    FROM Commodity
-    WHERE name = :commodity
-    GROUP BY name, year
->>>>>>> 937027827d30ab55bef4662a2e0207e2085a4f06
     """
     cursor = connection.cursor()
     cursor.execute(sql, commodity=commodity)
@@ -146,9 +141,7 @@ def query_three_form():
         crop = request.form.get('Commodity')
         return redirect(url_for('query_three_results', crop=crop))
     sql = '''
-    SELECT DISTINCT C2.name 
-    FROM COMMODITY
-    JOIN CROP C2 on COMMODITY.NAME = C2.NAME
+    SELECT DISTINCT name FROM Crop
     '''
     cursor = connection.cursor()
     cursor.execute(sql)
@@ -204,6 +197,41 @@ def query_three_results(crop):
     return render_template("query3results.html", data=data, bokehScript=script, bokehDiv=div)
 
 
+@app.route('/pro/4', methods=['GET', 'POST'])
+def query_four_form(state=""):
+    state_query = '''
+    SELECT DISTINCT state FROM LAND_VALUE ORDER BY STATE
+    '''
+    cursor = connection.cursor()
+    cursor.execute(state_query)
+    states = rows_to_dict_list(cursor)
+    cursor.close()
+    cursor = connection.cursor()
+
+    county_query = '''
+    SELECT DISTINCT COUNTY FROM LAND_VALUE 
+    WHERE STATE LIKE :s
+    ORDER BY COUNTY
+    '''
+    if request.method == 'POST' and request.form.get('county'):
+        county = request.form.get('county')
+        print(state)
+        state = session['state']
+        session.pop('state', None)
+        return redirect(url_for('query_four_results', state=state, county=county))
+    elif request.method == 'POST' and request.form.get('state'):
+        s = request.form.get('state')
+        print(s)
+        print(type(s))
+        session['state'] = s
+        cursor.execute(county_query, s=s)
+        counties = rows_to_dict_list(cursor)
+        return render_template("query4landing.html", state=s, states=states, counties=counties)
+    else:
+        print(request.form.get('state'))
+        return render_template("query4landing.html", states=states, counties={})
+
+
 @app.route('/pro/4/<state>/<county>')
 def query_four_results(state, county):
     sql = '''
@@ -218,13 +246,26 @@ def query_four_results(state, county):
     WHERE state = :state AND county = :county
     GROUP BY year) value
     ON income.year = value.year
+    ORDER BY year
     '''
     state = state.upper()
     county = county.upper()
     cursor = connection.cursor()
     cursor.execute(sql, state=state, county=county)
     data = rows_to_dict_list(cursor)
-    return render_template("query4results.html", data=data)
+
+    year = []
+    roi = []
+    for row in data:
+        year.append(row['YEAR'])
+        roi.append(row['ROI'])
+    p = figure(title="Yearly Return on Land Value in {0} County, {1}".format(county, state),
+               x_axis_label='Year',
+               y_axis_label='Return on Value')
+    p.line(year, roi, legend_label="Return on Asset Value", color='green', line_width=2)
+    script, div = components(p)
+
+    return render_template("query4results.html", bokehScript=script, bokehDiv=div)
 
 
 def rows_to_dict_list(cursor):

@@ -7,16 +7,31 @@
         <title> Query Form</title>
     </head>
     <body>
-        <form action="{{ url_for('query_one_form') }}" method="post">
+        <form action="{{ url_for('query_four_form', state=state) }}" method="post">
             <div>
                 <!-- <input list="queries" name=> -->
-                <select name="Commodity" id="queries">
-                    {% for name in data %}
-                        <option value = "{{ name }}">{{ name }}</option>
+                <h3>Choose a State</h3>
+                <select name="state" id="queries">
+                    {% for name in states %}
+                        <option value = "{{ name['STATE'] }}">{{ name['STATE'] }}</option>
                     {% endfor %}
-                </datalist>
-                <input type="submit">
+                </select>
+                {% if state is defined %}
+                    <h3>State Chosen: {{ state }}</h3>
+                    <h3>Choose a County:</h3>
+                    <select name="county" id="queries">
+                        {% for name in counties %}
+                            <option value="{{ name['COUNTY'] }}">{{ name['COUNTY'] }}</option>
+                        {% endfor %}
+                    </select>
+                {% endif %}
+                <button type="submit">
+                    {% if state is not defined %}
+                        Select State
+                    {% else %}
+                        Select County
+                    {% endif %}
+                </button>
             </div>
-        </form>
     </body>
 </html>
