@@ -259,7 +259,7 @@ def query_four_results(state, county):
     for row in data:
         year.append(row['YEAR'])
         roi.append(row['ROI'])
-    p = figure(title="Yearly Return on Land Value in {0} County, {1}".format(county, state),
+    p = figure(title="Yearly Return on Land Value in {0} County, {1}".format(county.title(), state),
                x_axis_label='Year',
                y_axis_label='Return on Value')
     p.line(year, roi, legend_label="Return on Asset Value", color='green', line_width=2)
