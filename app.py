@@ -3,6 +3,8 @@ import cx_Oracle
 import os
 import json
 from flask import Flask, render_template, request, redirect, url_for
+from bokeh.embed import components
+from bokeh.plotting import figure
 
 app = Flask(__name__)
 
@@ -48,7 +50,7 @@ def pro():
 def query_one_form():
     if request.method == "POST":
         commodity = request.form.get('Commodity')
-        return redirect(url_for('query_one_results', commodity=commodity))
+        return redirect(url_for('query_one', commodity=commodity))
     else:
         sql = """
         SELECT DISTINCT name
@@ -63,22 +65,45 @@ def query_one_form():
 
 
 @app.route('/pro/1/<commodity>')
-def query_one_results(commodity):
+def query_one(commodity):
     sql = """
-    SELECT name, farm_income, year
+    SELECT name, year, SUM(farm_income) farm_income
     FROM Commodity
-    WHERE name = :commodity 
+    WHERE name = :commodity
+    GROUP BY name, year
+    ORDER BY year, name ASC
     """
     cursor = connection.cursor()
     cursor.execute(sql, commodity=commodity)
     data = rows_to_dict_list(cursor)
-    return render_template("query1results.html", data=data)
+    year = []
+    farm_income = []
+    for item in data:
+        year.append(item['YEAR'])
+        farm_income.append(item['FARM_INCOME'])
+    print(year)
+    print(farm_income)
+    p = figure(title="Cost Changes over Years", x_axis_label='Year', y_axis_label='Price')
+    p.line(year, farm_income, legend_label="Food ", color="blue", line_width=2)
+    script, div = components(p)
+
+    return render_template("query1results.html", bokehScript=script, bokehDiv=div)
+
+
+@app.route('/pro/2', methods=['GET', 'POST'])
+def query_two_form():
+    if request.method == 'POST':
+        animal = request.form.get('animal')
+        vegetable = request.form.get('vegetable')
+        return redirect(url_for('query_two_results', animal=animal, vegetable=vegetable))
+    else:
+        return render_template("query2landing.html")
 
 
 @app.route('/pro/2/<animal>/<vegetable>')
 def query_two_results(animal, vegetable):
     sql = """
-        SELECT cr_year year, animal_income/veg_income FROM
+        SELECT cr_year year, animal_income/veg_income ratio FROM
         (SELECT c.year ls_year, ls.name animal_name, sum(farm_income) animal_income
         from Commodity c JOIN Livestock ls
         ON c.name = ls.name
@@ -91,10 +116,23 @@ def query_two_results(animal, vegetable):
         where cr.name = :vegetable
         group by cr.year, cr.name) veg
         ON ls_year = cr_year
+        order by year asc
         """
     cursor = connection.cursor()
     cursor.execute(sql, animal=animal, vegetable=vegetable)
     data = rows_to_dict_list(cursor)
+    year = []
+    ratio = []
+    for item in data:
+        year.append(item['YEAR'])
+        ratio.append(item['RATIO'])
+    p = figure(title="Ratio of meat to vegetable income", x_axis_label='Year', y_axis_label='Ratio')
+    p.line(year, ratio, legend_label="Ratio", color='blue', line_width=2)
+    script, div = components(p)
+
+    return render_template("query2results.html", bokehScript=script, bokehDiv=div)
+
+
     return render_template("query2results.html", data=data)
 
 
@@ -140,6 +178,7 @@ def query_four_results(state, county):
 def rows_to_dict_list(cursor):
     columns = [i[0] for i in cursor.description]
     return [dict(zip(columns, row)) for row in cursor]
+
 
 
 if __name__ == '__main__':
