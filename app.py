@@ -133,7 +133,22 @@ def query_two_results(animal, vegetable):
     return render_template("query2results.html", bokehScript=script, bokehDiv=div)
 
 
-    return render_template("query2results.html", data=data)
+@app.route('/pro/3', methods=['GET', 'POST'])
+def query_three_form():
+    if request.method == 'POST':
+        crop = request.form.get('Commodity')
+        return redirect(url_for('query_three_results', crop=crop))
+    sql = '''
+    SELECT DISTINCT C2.name 
+    FROM COMMODITY
+    JOIN CROP C2 on COMMODITY.NAME = C2.NAME
+    '''
+    cursor = connection.cursor()
+    cursor.execute(sql)
+    data = []
+    for name in cursor.fetchall():
+        data.append(name[0])
+    return render_template("query3landing.html", data=data)
 
 
 @app.route('/pro/3/<crop>')
@@ -144,12 +159,42 @@ def query_three_results(crop):
     JOIN
     CROP cr ON cr.State = c.State
     WHERE cr.name = :crop
-    GROUP BY c.region, cr.year
+    GROUP BY cr.year, c.region
+    ORDER BY cr.year
     """
     cursor = connection.cursor()
     cursor.execute(sql, crop=crop)
-    data = rows_to_dict_list(cursor)
-    return render_template("query3results.html", data=data)
+    rows = cursor.fetchall()
+
+    data = {
+        'year': [2002, 2007, 2012, 2017],
+        'Northeast': [],
+        'West': [],
+        'South': [],
+        'Midwest': [],
+    }
+
+    length = 1
+    for y in data['year']:
+        for row in rows:
+            if row[1] == y:
+                data[row[0]].append(row[2])
+        for key in data:
+            if len(data[key]) < length:
+                data[key].append(0)
+
+    p = figure(title="Crop Production by Region", x_axis_label="year", y_axis_label="Acres Harvested")
+
+    colors = ['blue', 'green', 'red', 'purple']
+    i = 0
+    for key in data:
+        if key == 'year' or len(data[key]) == 0:
+            continue
+        p.line(data['year'], data[key], legend_label=key, line_width=2, color=colors[i])
+        i += 1
+
+    script, div = components(p)
+    return render_template("query3results.html", data=data, bokehScript=script, bokehDiv=div)
 
 
 @app.route('/pro/4/<state>/<county>')
@@ -178,7 +223,6 @@ def query_four_results(state, county):
 def rows_to_dict_list(cursor):
     columns = [i[0] for i in cursor.description]
     return [dict(zip(columns, row)) for row in cursor]
-
 
 
 if __name__ == '__main__':
