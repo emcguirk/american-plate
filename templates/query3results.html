@@ -9,6 +9,7 @@
 <body>
     <div id="results"></div>
     <a href="{{ url_for("pro") }}">Back to Queries</a>
+    <a href="{{ url_for('query_three_form') }}">Query Again</a>
     <script>
         const resultsList = document.getElementById('results')
         new URLSearchParams(window.location.search).forEach((value, name) => {
