@@ -311,8 +311,35 @@ def query_five_results(state):
     print(year)
     print(ratio)
     p = figure(title="Ratio of Women Producers over Acres Harvested in {0}".format(state), x_axis_label='Year', y_axis_label='Producers / Acres')
-    p.line(year, ratio, legend_label="Ratio ", color="blue", line_width=2)
+
+    sql2 = """
+    SELECT f_year year, female_principals/total_acres ratio FROM
+    (SELECT year f_year, state f_state, female_principals
+    FROM FEMALE_PRODUCERS f
+    WHERE state = :state) female
+    JOIN
+    (SELECT year c_year, state c_state, sum(herd_size) total_acres
+    FROM LIVESTOCK c
+    WHERE state = :state
+    group by year, state) acres
+    ON f_year = c_year
+    ORDER BY year ASC
+    """
+
+    cursor.execute(sql2, state=state)
+    data = rows_to_dict_list(cursor)
+    year2 = []
+    ratio2 = []
+    for item in data:
+        year2.append(item['YEAR'])
+        ratio2.append(item['RATIO'])
+    print(year2)
+    print(ratio2)
+
+    p.line(year, ratio, legend_label="Ratio: Women / Acres Harvested", color="blue", line_width=2)
+    p.line(year2, ratio2, legend_label="Ratio: Women / Herd Size", color="orange", line_width=2)
     script, div = components(p)
+    
 
     return render_template("query5results.html", bokehScript=script, bokehDiv=div)
 
