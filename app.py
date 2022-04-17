@@ -15,7 +15,7 @@ if sys.platform.startswith("darwin"):
 elif sys.platform.startswith("linux"):
     lib_dir = "/opt/oracle/instantclient_21_5"
 else:
-    lib_dir = os.path.join(os.environ.get("USERPROFILE"), "OneDrive", "Downloads", "instantclient_19_8")
+    lib_dir = r"C:\Users\ayeja\Documents\Downloads\instantclient_21_3"
 
 cx_Oracle.init_oracle_client(lib_dir=lib_dir)
 
@@ -266,6 +266,57 @@ def query_four_results(state, county):
     script, div = components(p)
 
     return render_template("query4results.html", bokehScript=script, bokehDiv=div)
+
+@app.route('/pro/5', methods=['GET', 'POST'])
+def query_five_form():
+    if request.method == "POST":
+        state = request.form.get('state')
+        return redirect(url_for('query_five_results', state=state))
+    else:
+        sql = '''
+        SELECT DISTINCT state FROM LAND_VALUE ORDER BY STATE
+        '''
+        cursor = connection.cursor()
+        cursor.execute(sql)
+        data = []
+        for name in cursor.fetchall():
+            data.append(name[0])
+        return render_template("query5landing.html", states = data)
+    
+
+@app.route('/pro/5/<state>')
+def query_five_results(state):
+    sql = """
+    SELECT f_year year, female_principals/total_acres ratio FROM
+    (SELECT year f_year, state f_state, female_principals
+    FROM FEMALE_PRODUCERS f
+    WHERE state = :state) female
+    JOIN
+    (SELECT year c_year, state c_state, sum(acres_harvested) total_acres
+    FROM CROP c
+    WHERE state = :state
+    group by year, state) acres
+    ON f_year = c_year
+    ORDER BY year ASC
+    """
+    state = state.upper()
+    cursor = connection.cursor()
+    cursor.execute(sql, state=state)
+    data = rows_to_dict_list(cursor)
+    year = []
+    ratio = []
+    for item in data:
+        year.append(item['YEAR'])
+        ratio.append(item['RATIO'])
+    print(year)
+    print(ratio)
+    p = figure(title="Ratio of Women Producers over Acres Harvested in {0}".format(state), x_axis_label='Year', y_axis_label='Producers / Acres')
+    p.line(year, ratio, legend_label="Ratio ", color="blue", line_width=2)
+    script, div = components(p)
+
+    return render_template("query5results.html", bokehScript=script, bokehDiv=div)
+
+
 
 
 def rows_to_dict_list(cursor):
