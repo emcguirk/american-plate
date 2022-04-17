@@ -10,6 +10,9 @@
     <div id="results"></div>
     <a href="{{ url_for("welcome") }}">Back to Queries</a>
     <a href="{{ url_for('query_one_form') }}">Query Again</a>
+    {% for item in data %}
+        <p>{{ data[item] }}</p>
+    {% endfor %}
     <script>
         const resultsList = document.getElementById('results')
         new URLSearchParams(window.location.search).forEach((value, name) => {

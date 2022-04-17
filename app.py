@@ -69,24 +69,49 @@ def query_one_form():
 @app.route('/pro/1/<commodity>')
 def query_one(commodity):
     sql = """
-    SELECT name, year, SUM(farm_income) farm_income
-    FROM Commodity
-    WHERE name = :commodity
-    GROUP BY name, year
-    ORDER BY year, name ASC
+        SELECT y.year, y.state, sum(y.years_on_operation)/ 
+        (SELECT COUNT(*) FROM years_on_operation y1 WHERE y.state = y1.state) avg_tenure
+        FROM YEARS_ON_OPERATION y
+        JOIN
+        (SELECT * FROM (
+        SELECT state, SUM(FARM_INCOME) FROM COMMODITY
+        WHERE name = :commodity
+        GROUP BY STATE
+        ORDER BY SUM(FARM_INCOME) DESC)
+        WHERE rownum < 6) t1
+        ON y.state = t1.state
+        GROUP BY y.year, y.state
     """
     cursor = connection.cursor()
     cursor.execute(sql, commodity=commodity)
-    data = rows_to_dict_list(cursor)
-    year = []
-    farm_income = []
-    for item in data:
-        year.append(item['YEAR'])
-        farm_income.append(item['FARM_INCOME'])
-    print(year)
-    print(farm_income)
-    p = figure(title="Cost Changes over Years", x_axis_label='Year', y_axis_label='Price')
-    p.line(year, farm_income, legend_label="Food ", color="blue", line_width=2)
+    rows = cursor.fetchall()
+    data = {
+        'year': [2002, 2007, 2012, 2017]
+    }
+
+    length = 1
+    for y in data['year']:
+        for row in rows:
+            if row[0] == y:
+                if row[1] in data:
+                    data[row[1]].append(row[2])
+                else:
+                    data[row[1]] = []
+                    data[row[1]].append(row[2])
+        for key in data:
+            if len(data[key]) < length:
+                data[key].append(0)
+
+    p = figure(title="Change in Average Tenure in Farming", x_axis_label="year",
+               y_axis_label="Average time on Operation")
+
+    colors = ['blue', 'green', 'red', 'purple', 'cyan']
+    i = 0
+    for key in data:
+        if key == 'year' or len(data[key]) == 0:
+            continue
+        p.line(data['year'], data[key], legend_label=key, line_width=2, color=colors[i])
+        i += 1
     script, div = components(p)
 
     return render_template("query1results.html", bokehScript=script, bokehDiv=div)
@@ -289,7 +314,7 @@ def query_five_results(state):
     sql = """
     SELECT f_year year, female_principals/total_acres ratio FROM
     (SELECT year f_year, state f_state, female_principals
-    FROM FEMALE_PRODUCERS f
+    FROM FEMALE_PRINCIPALS f
     WHERE state = :state) female
     JOIN
     (SELECT year c_year, state c_state, sum(acres_harvested) total_acres
@@ -315,7 +340,7 @@ def query_five_results(state):
     sql2 = """
     SELECT f_year year, female_principals/total_acres ratio FROM
     (SELECT year f_year, state f_state, female_principals
-    FROM FEMALE_PRODUCERS f
+    FROM FEMALE_PRINCIPALS f
     WHERE state = :state) female
     JOIN
     (SELECT year c_year, state c_state, sum(herd_size) total_acres
