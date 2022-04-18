@@ -4,12 +4,24 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <link rel=”stylesheet” href=”https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css”rel=”nofollow” integrity=”sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm” crossorigin=”anonymous”>
         <title> Query Form</title>
+        <link rel="stylesheet" href = "static/css/styles.css">
     </head>
     <body>
+        <h1>American Plate</h1>
+        <h2>A Trend Analysis of Agriculture and Livestock Products</h2>
+        <p>American Plate is a web-based user interface that 
+            allows you to compare food production 
+            with pricing across the United States. Discover new trends 
+            from the stored data in relation to agricultural and meat products 
+            by using one of our complex queries! This is an amazing tool 
+            that can be used by local consumers, farmers, companies, and legislators 
+            to better understand food production and its economic impact on society. 
+            Using data from the United States Department of Agriculture (USDA) and 
+            pulling over 450,000 tuples, our goal is to discover unique trends as the data changes over time.</p>
+        <img class ="tractor" src="static/images/tractor.jpg" alt = "Tractor-img">
         <button onclick="window.location.href='{{ url_for("query_one_form") }}'">
-        Query 1: Cost of Commodities
+        Query 1: Average Tenure of Farming based on Commodity
         </button>
         <button onclick="window.location.href='{{ url_for('query_two_form') }}'">
         Query 2: Meat vs. Veggies
@@ -21,10 +33,10 @@
         Query 4: Land Productivity
         </button>
         <button onclick="window.location.href='{{ url_for('query_five_form') }}'">
-        Query 5: Woman vs. Wild
+        Query 5: Women Producers vs. Land and Animal Resources
         </button>
         <form action="{{ url_for("welcome") }}" method="post">
-            <input type="submit" value="Count Tuples">
+            <input type="submit" value="Count Tuples" id="alsobutton">
         </form>
         {% if value != 0 %}
             <p>{{ value }}</p>

@@ -5,8 +5,13 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
         <title> Query Form</title>
+        <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/styles.css') }}">
     </head>
     <body>
+        <h2> Average Tenure of Farming based on Crop</h2>
+        <p>Ever wonder where a certain commodity yields the highest results? This query lets you pick your favorite 
+            commodity, and then we will display a graph with the top 5 producing states for that commodity! We base our 
+            findings on each state’s average farmer's tenure on their operation.</p>
         <form action="{{ url_for('query_one_form') }}" method="post">
             <div>
                 <!-- <input list="queries" name=> -->

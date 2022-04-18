@@ -1,0 +1,69 @@
+/* TAG SELECTORS */
+body {
+  margin: 100;
+  text-align: center;
+  font-family: 'Merriweather', serif;
+  font-size: 150%;
+}
+
+h1 {
+  font-size: 5.625rem;
+  font-family: 'Roboto', sans-serif;
+  margin: 50px auto 0 auto;
+  color: #222;
+}
+
+h2 {
+    font-size: 2.5rem;
+    font-family: 'Roboto', sans-serif;
+    color: #f0134d;
+    font-weight: normal;
+}
+
+h3 {
+  font-family: 'Roboto', sans-serif;
+  color: #ff6f5e;
+}
+
+a {
+  color: #ff6f5e;
+}
+
+
+button {
+  background-color: white;
+  border: 2px solid #e7e7e7;
+  color: black;
+  padding: 16px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  transition-duration: 0.4s;
+  cursor: pointer;
+}
+
+
+button:hover {background-color: #e7e7e7;}
+
+
+#alsobutton {
+  background-color: white;
+  border: 2px solid #e7e7e7;
+  color: black;
+  padding: 16px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  transition-duration: 0.4s;
+  cursor: pointer;
+}
+
+#alsobutton:hover{
+background-color: #e7e7e7;
+}
+
+

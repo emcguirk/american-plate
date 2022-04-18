@@ -102,7 +102,7 @@ def query_one(commodity):
             if len(data[key]) < length:
                 data[key].append(0)
 
-    p = figure(title="Change in Average Tenure in Farming", x_axis_label="year",
+    p = figure(title="Change in Average Tenure in Farming for {0}".format(commodity), x_axis_label="year",
                y_axis_label="Average time on Operation")
 
     colors = ['blue', 'green', 'red', 'purple', 'cyan']
@@ -153,7 +153,7 @@ def query_two_results(animal, vegetable):
     for item in data:
         year.append(item['YEAR'])
         ratio.append(item['RATIO'])
-    p = figure(title="Ratio of meat to vegetable income", x_axis_label='Year', y_axis_label='Ratio')
+    p = figure(title="Ratio of meat({0}) to vegetable({1})".format(animal, vegetable), x_axis_label='Year', y_axis_label='Ratio')
     p.line(year, ratio, legend_label="Ratio", color='blue', line_width=2)
     script, div = components(p)
 
@@ -208,7 +208,7 @@ def query_three_results(crop):
             if len(data[key]) < length:
                 data[key].append(0)
 
-    p = figure(title="Crop Production by Region", x_axis_label="year", y_axis_label="Acres Harvested")
+    p = figure(title="Crop Production by Region for {0}".format(crop), x_axis_label="year", y_axis_label="Acres Harvested")
 
     colors = ['blue', 'green', 'red', 'purple']
     i = 0
@@ -311,7 +311,7 @@ def query_five_form():
 
 @app.route('/pro/5/<state>')
 def query_five_results(state):
-    sql = """
+    sql = '''
     SELECT f_year year, female_principals/total_acres ratio FROM
     (SELECT year f_year, state f_state, female_principals
     FROM FEMALE_PRINCIPALS f
@@ -323,7 +323,7 @@ def query_five_results(state):
     group by year, state) acres
     ON f_year = c_year
     ORDER BY year ASC
-    """
+    '''
     state = state.upper()
     cursor = connection.cursor()
     cursor.execute(sql, state=state)
@@ -337,7 +337,7 @@ def query_five_results(state):
     print(ratio)
     p = figure(title="Ratio of Women Producers over Acres Harvested in {0}".format(state), x_axis_label='Year', y_axis_label='Producers / Acres')
 
-    sql2 = """
+    sql2 = '''
     SELECT f_year year, female_principals/total_acres ratio FROM
     (SELECT year f_year, state f_state, female_principals
     FROM FEMALE_PRINCIPALS f
@@ -349,7 +349,7 @@ def query_five_results(state):
     group by year, state) acres
     ON f_year = c_year
     ORDER BY year ASC
-    """
+    '''
 
     cursor.execute(sql2, state=state)
     data = rows_to_dict_list(cursor)

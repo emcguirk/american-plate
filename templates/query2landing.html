@@ -5,12 +5,17 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
         <title> Query Form</title>
+        <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/styles.css') }}">
     </head>
     <body>
+        <h2>Meat vs Veggies</h2>
+        <p>In the past decade, there has been a rise in vegetarian diets.
+        This query plans to analyze if this food trend is also reflected in the production and sale of these products. 
+        The y-axis would be the computed ratio of the farm income of animal protein over the farm income of a plant protein.</p>
         <form action="{{ url_for('query_two_form') }}" method="post">
             <div>
                 <!-- <input list="queries" name=> -->
-                <p>Animal Protein</p>
+                <h3>Animal Protein</h3>
                 <select name="animal" id="queries">
                     <p>Animal Protein</p>
                     <option value = "BISON">BISON</option>
@@ -18,7 +23,7 @@
                     <option value = "SHEEP">SHEEP</option>
                 </select>
                 <!-- <input type="submit"> -->
-                <p>Vegetable Protein</p>
+                <h3>Vegetable Protein</h3>
                 <select name="vegetable" id="queries2">
                     <option value = "SOYBEANS">SOYBEANS</option>
                     <option value = "CORN">CORN</option>

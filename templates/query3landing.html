@@ -5,8 +5,12 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
         <title> Query Form</title>
+        <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/styles.css') }}">
     </head>
     <body>
+        <h2>Crop Viability</h2>
+        <p>Why are some crops grown in certain regions in the United States? This query aims to analyze 
+           the production of a selected crop across the four major regions across the United States.</p> 
         <form action="{{ url_for('query_three_form') }}" method="post">
             <div>
                 <!-- <input list="queries" name=> -->

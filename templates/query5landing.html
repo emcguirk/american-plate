@@ -5,8 +5,13 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
         <title> Query Form</title>
+        <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/styles.css') }}">
     </head>
     <body>
+        <h2>Comparing Women Producers to Farm Productivity Metrics</h2>
+        <p>In a traditionally male dominated field, we set out to measure the potential increase 
+            or decrease in female land producers. This query produces a ratio of the number of female 
+            producers per state over the sum of acres harvested in each state and is measured across four years.</p>
         <form action="{{ url_for('query_five_form') }}" method="post">
             <div>
                 <!-- <input list="queries" name=> -->
